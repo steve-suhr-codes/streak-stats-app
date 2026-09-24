@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  googleSub String?  @unique @map("google_sub")
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  streaks Streak[]
+
+  @@map("users")
+}
+
+model Streak {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  label     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs StreakLog[]
+
+  @@index([userId])
+  @@map("streaks")
+}
+
+/// One uninterrupted run of a streak. Restarting closes the open log (sets
+/// end_date) and opens a new one, so history and "longest streak" survive.
+/// A partial unique index in the migration enforces one open log per streak.
+model StreakLog {
+  id        String    @id @default(uuid()) @db.Uuid
+  streakId  String    @map("streak_id") @db.Uuid
+  startDate DateTime  @map("start_date") @db.Date
+  /// null = the active run
+  endDate   DateTime? @map("end_date") @db.Date
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  streak Streak @relation(fields: [streakId], references: [id], onDelete: Cascade)
+
+  @@index([streakId, startDate])
+  @@map("streak_logs")
+}
