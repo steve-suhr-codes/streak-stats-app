@@ -16,22 +16,52 @@ npm workspaces tie them together. `@streak-stats/shared` ships TypeScript source
 
 ## Getting started
 
-Needs Node 22+, and Postgres (via Docker, or any local/hosted instance).
+Needs Node 22+, a Postgres database ([Neon](https://neon.tech)), and Android Studio with an emulator. On Windows, also see [Building on Windows](#building-on-windows).
 
 ```bash
 npm install
-cp apps/api/.env.example apps/api/.env     # then set JWT_SECRET
-npm run db:up                               # Postgres in Docker (docker-compose.yml)
-npm run db:migrate                          # apply Prisma migrations
-npm run api                                 # API on http://localhost:3000
-npm run android                             # Expo dev server + Android
+cp apps/api/.env.example apps/api/.env         # set DATABASE_URL, JWT_SECRET, GOOGLE_CLIENT_IDS
+cp apps/mobile/.env.example apps/mobile/.env   # set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID
+npm run db:migrate                             # apply Prisma migrations to the database
 ```
 
-The app reaches the API at `http://10.0.2.2:3000` (the host machine from the Android emulator). On a physical phone, copy `apps/mobile/.env.example` to `apps/mobile/.env` and set `EXPO_PUBLIC_API_URL` to your computer's LAN IP.
+The app uses native modules (Google sign-in), so it runs as a **development build**, not in Expo Go. Build and install it once, with the emulator running:
 
-### Signing in during development
+```bash
+npm run android:build     # compiles and installs the app; again only when native packages change
+```
 
-Google sign-in isn't wired up in the app yet. With `ALLOW_DEV_LOGIN=true` in the API's `.env`, dev builds show an email sign-in on the login screen that creates/uses a user with that email. Never enable it in production.
+Day to day, in two terminals:
+
+```bash
+npm run api               # API on http://localhost:3000
+npm run android           # Expo dev server; opens the installed app
+```
+
+The app reaches the API at `http://10.0.2.2:3000` (the host machine from the Android emulator). On a physical phone, set `EXPO_PUBLIC_API_URL` in `apps/mobile/.env` to your computer's LAN IP.
+
+### Signing in
+
+- **Google:** the app gets a Google ID token (Android Credential Manager, via `react-native-nitro-google-signin`) and the API verifies it at `POST /auth/google`. Google Cloud needs a **Web application** OAuth client (its ID goes in both `.env` files) and an **Android** client with package `com.stevesuhr.streakstats` and the build's signing SHA-1. On an emulator, a Google account must be added to the device first.
+- **Dev login:** with `ALLOW_DEV_LOGIN=true` in the API's `.env`, dev builds show an email sign-in at the bottom of the login screen that creates/uses a user with that email. Never enable it in production.
+
+iOS isn't set up yet: it needs an iOS OAuth client, and the `react-native-nitro-google-signin` config plugin added back to `apps/mobile/app.json` with that client's `iosUrlScheme` (the plugin refuses to run without it, even for Android-only builds, so it's left out for now).
+
+## Building on Windows
+
+Two things break the native Android build on Windows out of the box:
+
+1. **Java version.** React Native needs **JDK 17**. Android Studio's bundled Java (25 at the time of writing) fails with `A restricted method in java.lang.System has been called`. Install JDK 17 (`winget install Microsoft.OpenJDK.17`) and point the user environment variable `JAVA_HOME` at it (e.g. `C:\Program Files\Microsoft\jdk-17.x.x-hotspot`).
+2. **Path length.** Native builds generate paths over Windows' 260-character limit (`ninja: error: ... Filename longer than 260 characters`). Windows long paths must be enabled, *and* the build needs **CMake 4.x** (its ninja handles long paths; the default CMake 3.22.1's doesn't). Install CMake 4.x in Android Studio → SDK Manager → SDK Tools (tick "Show Package Details"), then create `apps/mobile/android/local.properties`:
+
+   ```properties
+   sdk.dir=C:/Users/<you>/AppData/Local/Android/Sdk
+   cmake.dir=C:/Users/<you>/AppData/Local/Android/Sdk/cmake/4.1.2
+   ```
+
+   `apps/mobile/android/` is generated (`expo prebuild`) and gitignored, so this file is per-machine — and **`expo prebuild --clean` deletes it**; re-create it afterwards. If you switch CMake versions, delete the stale `.cxx` folders (`apps/mobile/android/app/.cxx` and `node_modules/*/android/.cxx`) before rebuilding.
+
+Also set `ANDROID_HOME` to the SDK folder and add `%ANDROID_HOME%\platform-tools` to `Path` (for `adb`).
 
 ## Data model
 
@@ -59,4 +89,4 @@ All routes except `/health` and `/auth/*` require `Authorization: Bearer <token>
 
 ## Scripts (from the repo root)
 
-`npm run typecheck`, `npm test`, `npm run db:studio`.
+`npm run api`, `npm run android`, `npm run android:build`, `npm run db:migrate`, `npm run db:studio`, `npm run typecheck`, `npm test`.

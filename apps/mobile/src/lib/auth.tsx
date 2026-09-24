@@ -2,6 +2,7 @@ import type { AuthResponse, UserDto } from '@streak-stats/shared';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { api, setAuthToken, setUnauthorizedHandler } from './api';
+import { signOutOfGoogle } from './google-sign-in';
 import { sessionStore } from './session-store';
 
 const TOKEN_KEY = 'streak-stats.session';
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthToken(null);
     setUser(null);
     await sessionStore.remove(TOKEN_KEY);
+    await signOutOfGoogle().catch(() => {}); // best effort; our session is already gone
   }, []);
 
   const startSession = useCallback(async ({ token, user }: AuthResponse) => {

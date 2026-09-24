@@ -39,7 +39,12 @@ export default function LoginScreen() {
         <Pressable
           accessibilityRole="button"
           disabled={pending !== null}
-          onPress={() => run('google', async () => signInWithGoogle(await getGoogleIdToken()))}
+          onPress={() =>
+            run('google', async () => {
+              const idToken = await getGoogleIdToken();
+              if (idToken) await signInWithGoogle(idToken); // null = user dismissed the sheet
+            })
+          }
           style={({ pressed }) => [styles.googleButton, pressed && styles.googleButtonPressed]}
         >
           {pending === 'google' ? (

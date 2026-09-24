@@ -9,8 +9,8 @@
   "scripts": {
     "mobile": "npm run start -w @streak-stats/mobile",
     "android": "npm run android -w @streak-stats/mobile",
+    "android:build": "npm run build:android -w @streak-stats/mobile",
     "api": "npm run dev -w @streak-stats/api",
-    "db:up": "docker compose up -d db",
     "db:migrate": "npm run db:migrate -w @streak-stats/api",
     "db:studio": "npm run db:studio -w @streak-stats/api",
     "typecheck": "npm run typecheck --workspaces --if-present",
