@@ -32,7 +32,13 @@
       "expo-status-bar",
       "expo-secure-store",
       "@react-native-community/datetimepicker",
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-nitro-google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.651167340254-j2sr308r06g9f74q26sd85j94hmdm3hh"
+        }
+      ]
     ]
   }
 }

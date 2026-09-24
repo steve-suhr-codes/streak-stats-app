@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {
   GoogleOneTapSignIn,
   isCancelledResponse,
@@ -10,6 +11,9 @@ import {
 // The *Web* OAuth client ID from Google Cloud — also what the API accepts as the token audience
 // (GOOGLE_CLIENT_IDS). Not the Android client ID. It isn't secret.
 const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+// The iOS OAuth client ID. Required on iOS, ignored on Android. Its reversed form is also the
+// iosUrlScheme in app.json — keep the two in sync.
+const IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
 let configured = false;
 
@@ -18,7 +22,10 @@ function ensureConfigured() {
   if (!WEB_CLIENT_ID) {
     throw new Error('Google sign-in is not configured: set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID in apps/mobile/.env');
   }
-  GoogleOneTapSignIn.configure({ webClientId: WEB_CLIENT_ID });
+  if (Platform.OS === 'ios' && !IOS_CLIENT_ID) {
+    throw new Error('Google sign-in is not configured: set EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID in apps/mobile/.env');
+  }
+  GoogleOneTapSignIn.configure({ webClientId: WEB_CLIENT_ID, iosClientId: IOS_CLIENT_ID });
   configured = true;
 }
 

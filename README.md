@@ -45,7 +45,7 @@ The app reaches the API at `http://10.0.2.2:3000` (the host machine from the And
 - **Google:** the app gets a Google ID token (Android Credential Manager, via `react-native-nitro-google-signin`) and the API verifies it at `POST /auth/google`. Google Cloud needs a **Web application** OAuth client (its ID goes in both `.env` files) and an **Android** client with package `com.stevesuhr.streakstats` and the build's signing SHA-1. On an emulator, a Google account must be added to the device first.
 - **Dev login:** with `ALLOW_DEV_LOGIN=true` in the API's `.env`, dev builds show an email sign-in at the bottom of the login screen that creates/uses a user with that email. Never enable it in production.
 
-iOS isn't set up yet: it needs an iOS OAuth client, and the `react-native-nitro-google-signin` config plugin added back to `apps/mobile/app.json` with that client's `iosUrlScheme` (the plugin refuses to run without it, even for Android-only builds, so it's left out for now).
+iOS also needs an **iOS** OAuth client (bundle ID `com.stevesuhr.streakstats`): its ID goes in `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` and in the API's `GOOGLE_CLIENT_IDS`, and its reversed form (`com.googleusercontent.apps.<id>`) is the `iosUrlScheme` for the `react-native-nitro-google-signin` plugin in `apps/mobile/app.json`. iOS builds need a Mac with Xcode (`npx expo run:ios --device`) or EAS Build.
 
 ## Building on Windows
 
