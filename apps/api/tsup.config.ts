@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: { index: 'src/main.ts' },
   format: ['esm'],
   target: 'node22',
   // The shared package ships TypeScript source, so bundle it into the build.

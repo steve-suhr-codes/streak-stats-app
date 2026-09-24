@@ -7,8 +7,8 @@ import {
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 
-import type { AppDeps } from '../app';
 import { authenticate } from '../auth/authenticate';
+import type { AppDeps } from '../build-app';
 import { fromCalendarDateString, toCalendarDateString, type Db } from '../db';
 import type { Streak, StreakLog } from '../generated/prisma/client';
 import { HttpError, notFound } from '../http-error';

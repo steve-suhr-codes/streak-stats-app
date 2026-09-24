@@ -6,8 +6,8 @@ import {
 } from '@streak-stats/shared';
 import type { FastifyPluginAsync } from 'fastify';
 
-import type { AppDeps } from '../app';
 import { authenticate } from '../auth/authenticate';
+import type { AppDeps } from '../build-app';
 import type { User } from '../generated/prisma/client';
 import { HttpError, notFound } from '../http-error';
 
