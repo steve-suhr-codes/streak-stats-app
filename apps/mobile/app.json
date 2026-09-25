@@ -38,6 +38,14 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.651167340254-j2sr308r06g9f74q26sd85j94hmdm3hh"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
       ]
     ]
   }
