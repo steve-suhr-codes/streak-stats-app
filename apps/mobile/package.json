@@ -26,6 +26,7 @@
     "react-native-web": "^0.21.2"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
@@ -38,7 +39,8 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
-    "build:android": "expo run:android"
+    "build:android": "expo run:android",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "private": true
 }

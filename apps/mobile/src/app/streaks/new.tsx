@@ -2,7 +2,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { toCalendarDate } from '@streak-stats/shared';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Keyboard, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '../../components/Button';
@@ -33,7 +33,10 @@ export default function AddStreakScreen() {
   }
 
   return (
-    <View
+    // Tapping anywhere outside the text field closes the keyboard.
+    <Pressable
+      accessible={false}
+      onPress={Keyboard.dismiss}
       style={[
         styles.container,
         { paddingTop: insets.top + spacing.sm, paddingBottom: Math.max(insets.bottom, spacing.xxxl) },
@@ -61,8 +64,8 @@ export default function AddStreakScreen() {
             placeholderTextColor={colors.textSubtle}
             maxLength={80}
             autoFocus
+            // Return just closes the keyboard; saving is only via Save / Create Streak.
             returnKeyType="done"
-            onSubmitEditing={save}
           />
         </View>
 
@@ -71,7 +74,10 @@ export default function AddStreakScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`Start date ${formatCalendarDate(start)}. Edit`}
-            onPress={() => setShowPicker((v) => !v)}
+            onPress={() => {
+              Keyboard.dismiss();
+              setShowPicker((v) => !v);
+            }}
             style={[styles.inputBox, styles.dateRow]}
           >
             <View style={styles.dateLeft}>
@@ -102,7 +108,7 @@ export default function AddStreakScreen() {
       <View style={styles.flexSpacer} />
 
       <Button title="Create Streak" onPress={save} disabled={!canSave} loading={createStreak.isPending} />
-    </View>
+    </Pressable>
   );
 }
 

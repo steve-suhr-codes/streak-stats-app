@@ -90,3 +90,5 @@ All routes except `/health` and `/auth/*` require `Authorization: Bearer <token>
 ## Scripts (from the repo root)
 
 `npm run api`, `npm run android`, `npm run android:build`, `npm run db:migrate`, `npm run db:studio`, `npm run typecheck`, `npm test`.
+
+The app icon is generated from `apps/mobile/scripts/generate-icons.mjs` (the design is defined there; `apps/mobile/assets/icon.svg` is its output): `npm run icons -w @streak-stats/mobile`, then rebuild the native app.
