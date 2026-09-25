@@ -1,4 +1,4 @@
-See README.md for layout, setup, data model, and API.
+See README.md for layout, setup, data model, and API. See TODO.md for the pre-launch checklist.
 
 - npm workspaces monorepo. Install from the root. In `apps/mobile`, add packages with `npx expo install` (see apps/mobile/AGENTS.md for Expo rules).
 - Root `overrides` pins react/react-dom/react-native to the Expo SDK's versions. Update them when upgrading the SDK, then run `npx expo-doctor` in apps/mobile.

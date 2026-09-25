@@ -1,4 +1,5 @@
 import type { AuthResponse, UserDto } from '@streak-stats/shared';
+import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { api, setAuthToken, setUnauthorizedHandler } from './api';
@@ -15,6 +16,8 @@ type AuthState = {
   /** Dev-only email sign-in; the API must have ALLOW_DEV_LOGIN=true. */
   signInDev: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
+  /** Permanently deletes the account on the server, then signs out. */
+  deleteAccount: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -22,13 +25,15 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserDto | null>(null);
+  const queryClient = useQueryClient();
 
   const signOut = useCallback(async () => {
     setAuthToken(null);
     setUser(null);
+    queryClient.clear(); // don't show one account's streaks to the next
     await sessionStore.remove(TOKEN_KEY);
     await signOutOfGoogle().catch(() => {}); // best effort; our session is already gone
-  }, []);
+  }, [queryClient]);
 
   const startSession = useCallback(async ({ token, user }: AuthResponse) => {
     await sessionStore.set(TOKEN_KEY, token);
@@ -63,6 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signInWithGoogle: async (idToken) => startSession(await api.signInWithGoogle(idToken)),
       signInDev: async (email) => startSession(await api.signInDev({ email })),
       signOut,
+      deleteAccount: async () => {
+        await api.deleteAccount();
+        await signOut();
+      },
     }),
     [isLoading, user, startSession, signOut],
   );

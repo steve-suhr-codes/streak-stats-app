@@ -48,6 +48,7 @@ function RootNavigator() {
         <Stack.Screen name="index" />
         <Stack.Screen name="streaks/new" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="streaks/[id]" />
+        <Stack.Screen name="account" />
       </Stack.Protected>
     </Stack>
   );

@@ -62,6 +62,7 @@ export const api = {
   signInWithGoogle: (idToken: string) => request<AuthResponse>('POST', '/auth/google', { idToken }),
   signInDev: (input: DevSignInInput) => request<AuthResponse>('POST', '/auth/dev', input),
   me: () => request<UserDto>('GET', '/me'),
+  deleteAccount: () => request<void>('DELETE', '/me'),
 
   listStreaks: () => request<StreakDto[]>('GET', '/streaks'),
   getStreak: (id: string) => request<StreakDto>('GET', `/streaks/${id}`),

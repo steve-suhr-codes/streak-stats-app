@@ -65,5 +65,12 @@ export function authRoutes({ env, db, tokens, verifyGoogle }: AppDeps): FastifyP
       if (!user) throw notFound('User');
       return toUserDto(user);
     });
+
+    /** Permanently deletes the account. Streaks and their logs go with it (onDelete: Cascade). */
+    app.delete('/me', { onRequest: authenticate(tokens) }, async (request, reply) => {
+      // deleteMany rather than delete so a retried request still succeeds.
+      await db.user.deleteMany({ where: { id: request.userId } });
+      return reply.status(204).send();
+    });
   };
 }

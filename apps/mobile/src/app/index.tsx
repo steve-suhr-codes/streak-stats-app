@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
@@ -12,19 +12,11 @@ import { colors, fonts, screenPadding, spacing } from '../theme';
 /** Figma 1:3 "My Streaks". */
 export default function StreakListScreen() {
   const insets = useSafeAreaInsets();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const today = useToday();
   const { data: streaks, isPending, isError, error, refetch, isRefetching } = useStreaks();
 
   const initial = (user?.name ?? user?.email ?? '?').trim().charAt(0).toUpperCase();
-
-  function openAccountMenu() {
-    // The design has no account screen yet; the avatar is the natural place for sign-out.
-    Alert.alert(user?.name ?? 'Account', user?.email, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign out', style: 'destructive', onPress: signOut },
-    ]);
-  }
 
   const header = (
     <View style={styles.headerRow}>
@@ -32,7 +24,7 @@ export default function StreakListScreen() {
         <Text style={styles.title}>My Streaks</Text>
         <Text style={styles.subtitle}>Track your progress</Text>
       </View>
-      <Pressable accessibilityRole="button" accessibilityLabel="Account" onPress={openAccountMenu} style={styles.avatar}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Account" onPress={() => router.push('/account')} style={styles.avatar}>
         <Text style={styles.avatarLetter}>{initial}</Text>
       </Pressable>
     </View>

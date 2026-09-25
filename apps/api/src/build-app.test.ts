@@ -38,6 +38,11 @@ describe('app', () => {
     expect(res.statusCode).toBe(401);
   });
 
+  it('requires a session to delete an account', async () => {
+    const res = await makeApp().inject({ method: 'DELETE', url: '/me' });
+    expect(res.statusCode).toBe(401);
+  });
+
   it('does not expose dev login unless enabled', async () => {
     const res = await makeApp(false).inject({
       method: 'POST',
