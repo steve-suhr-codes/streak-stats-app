@@ -6,7 +6,8 @@ Status as of 2026-09-24: first iteration works end to end — iPhone (local Xcod
 
 - [ ] **Sign in with Apple** on iOS. Apps that offer a third-party login like Google must also offer an equivalent privacy-focused option (App Store guideline 4.8). Needs an Apple login path in the app and `POST /auth/apple` in the API. *(verify)*
 - [x] **In-app account deletion** (required by Apple for apps with account creation; also Google Play policy). Avatar → Account screen → Delete account → confirm; `DELETE /me` removes the user, streaks and logs. When Sign in with Apple is added, deletion must also revoke the Apple token. *(verify)*
-- [ ] **Privacy policy and Terms** pages at public URLs. The login screen already says "By continuing, you agree to the Terms & Privacy Policy" — link it to real pages (could live on stevesuhr.com).
+- [x] **Privacy policy and Terms** at stevesuhr.com/streak-stats/privacy and /streak-stats/terms (repo `steve-suhr-com`), linked from the login screen and the Account screen. Update them when payments/analytics are added.
+- [ ] **Make support@stevesuhr.com work** before the legal pages go live and before store submission — both pages list it as the contact address.
 - [ ] **Store privacy disclosures**: App Store privacy "nutrition labels" and Google Play Data safety form (we store email, name, avatar URL, streak data).
 - [ ] **Google OAuth consent screen**: move from Testing to **In production** (Testing only allows listed test users). Add privacy policy/home page URLs; check whether brand verification is needed. *(verify)*
 

@@ -4,6 +4,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View 
 
 import { useAuth } from '../lib/auth';
 import { getGoogleIdToken } from '../lib/google-sign-in';
+import { openLink, PRIVACY_POLICY_URL, TERMS_URL } from '../lib/links';
 import { colors, fonts, radius, spacing } from '../theme';
 
 /** Figma 4:5 "Login / Splash". */
@@ -58,7 +59,17 @@ export default function LoginScreen() {
             </>
           )}
         </Pressable>
-        <Text style={styles.legal}>By continuing, you agree to the Terms & Privacy Policy.</Text>
+        <Text style={styles.legal}>
+          By continuing, you agree to the{' '}
+          <Text style={styles.legalLink} accessibilityRole="link" onPress={() => openLink(TERMS_URL)}>
+            Terms
+          </Text>{' '}
+          &{' '}
+          <Text style={styles.legalLink} accessibilityRole="link" onPress={() => openLink(PRIVACY_POLICY_URL)}>
+            Privacy Policy
+          </Text>
+          .
+        </Text>
 
         {__DEV__ ? (
           <View style={styles.dev}>
@@ -157,6 +168,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     textAlign: 'center',
   },
+  legalLink: { textDecorationLine: 'underline' },
   // Not in the design: dev builds only.
   dev: {
     alignSelf: 'stretch',

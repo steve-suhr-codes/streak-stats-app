@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../components/Button';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { useAuth } from '../lib/auth';
+import { openLink, PRIVACY_POLICY_URL, TERMS_URL } from '../lib/links';
 import { colors, fonts, screenPadding, spacing } from '../theme';
 
 /** Opened from the avatar on My Streaks. Not in the Figma file; styled to match the detail screen. */
@@ -55,6 +56,14 @@ export default function AccountScreen() {
       <View style={styles.actions}>
         <Button title="Sign out" variant="secondary" onPress={signOut} />
         <Button title="Delete account" variant="outlineDanger" onPress={() => setConfirming(true)} />
+        <View style={styles.links}>
+          <Text style={styles.link} accessibilityRole="link" onPress={() => openLink(PRIVACY_POLICY_URL)}>
+            Privacy Policy
+          </Text>
+          <Text style={styles.link} accessibilityRole="link" onPress={() => openLink(TERMS_URL)}>
+            Terms of Service
+          </Text>
+        </View>
       </View>
 
       <ConfirmModal
@@ -89,4 +98,6 @@ const styles = StyleSheet.create({
   email: { fontFamily: fonts.regular, fontSize: 15, color: colors.textSubtle, textAlign: 'center' },
   flexSpacer: { flex: 1 },
   actions: { gap: spacing.md },
+  links: { flexDirection: 'row', justifyContent: 'center', gap: spacing.xxl, marginTop: spacing.sm },
+  link: { fontFamily: fonts.regular, fontSize: 13, color: colors.textSubtle, textDecorationLine: 'underline' },
 });
